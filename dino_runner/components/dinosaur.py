@@ -56,6 +56,7 @@ class Dinosaur(Sprite):
     
     def duck(self):
         self.image = DUCKING[self.step // 5]
+        self.rect = self.image.get_rect()
         self.set_position(self.POS_X, self.POS_Y+40)
         self.step += 1
     
