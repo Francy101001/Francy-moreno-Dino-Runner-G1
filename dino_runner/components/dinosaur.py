@@ -14,35 +14,34 @@ class Dinosaur(Sprite):
 
     def __init__(self):
         self.image = RUNNING[0]
-        self.rect = self.image.get_rect()
-        self.set_position(self.POS_X, self.POS_Y)
+        self.set_position()
         self.step = 0
-        self.action = "DINO_RUNNING"
+        self.action = DINO_RUNNING
         self.jump_velocity = self.JUMP_VELOCITY
 
 
     def update(self, user_input):
-        if self.action == "DINO_RUNNING":
+        if self.action ==DINO_RUNNING:
             self.run()
-        elif self.action == "DINO_JUMPING":
+        elif self.action == DINO_JUMPING:
            self.jump()
-        elif self.action == "DINO_DUCKING":
+        elif self.action == DINO_DUCKING:
             self.duck()
 
-        if self.action != "DINO_JUMPING":
+        if self.action != DINO_JUMPING:
             if user_input[pygame.K_UP]:
-                self.action = "DINO_JUMPING"
+                self.action = DINO_JUMPING
             elif user_input[pygame.K_DOWN]:
-                self.action = "DINO_DUCKING"
+                self.action = DINO_DUCKING
             else: 
-                self.action = "DINO_RUNNING"
+                self.action = DINO_RUNNING
         
         if self.step >= 10:
             self.step = 0
     
     def run(self):
         self.image = RUNNING[self.step // 5]
-        self.set_position(self.POS_X, self.POS_Y)
+        self.set_position()
         self.step += 1
     
     def jump(self):
@@ -51,18 +50,20 @@ class Dinosaur(Sprite):
         self.jump_velocity -= 0.8
         if self.jump_velocity < -self.JUMP_VELOCITY:
             self.action = DINO_RUNNING
-            self.set_position(self.POS_X, self.POS_Y)
+            self.set_position()
             self.jump_velocity = self.JUMP_VELOCITY
     
     def duck(self):
         self.image = DUCKING[self.step // 5]
         self.rect = self.image.get_rect()
-        self.set_position(self.POS_X, self.POS_Y+40)
+        self.set_position()
+        self.rect.y = self.POS_Y + 40
         self.step += 1
     
-    def set_position(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+    def set_position(self):
+        self.rect = self.image.get_rect()
+        self.rect.x = self.POS_X
+        self.rect.y = self.POS_Y
         
 
 
