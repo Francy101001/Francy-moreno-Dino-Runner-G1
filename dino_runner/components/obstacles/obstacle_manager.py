@@ -5,7 +5,7 @@ from dino_runner.components.obstacles.bird import Bird
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.obstacle import Obstacle
 from dino_runner.components.obstacles.rat import Rat
-from dino_runner.components.obstacles.stairs import Stairs
+
 
 
 
@@ -15,7 +15,7 @@ class ObstacleManager:
 
     def __init__(self):
         self.obstacles: list[Obstacle] = []
-        self.stairs = Stairs()
+        
 
     def update(self, game_speed, player, on_death):
         if not self.obstacles:
