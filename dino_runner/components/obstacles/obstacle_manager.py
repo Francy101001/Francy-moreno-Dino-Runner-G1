@@ -13,7 +13,7 @@ class ObstacleManager:
     def __init__(self):
         self.obstacles: list[Obstacle] = []
 
-    def update(self, game):
+    def update(self, game_speed, player, on_death):
         if not self.obstacles:
             obstacle_type = random.choice(["cactus", "bird", "small_cactus", "rat"])
             if obstacle_type == "cactus":
@@ -27,11 +27,13 @@ class ObstacleManager:
             
             
         for obstacle in self.obstacles:
-            obstacle.update(game.game_speed, self.obstacles)
-            if obstacle.rect.colliderect(game.player.rect):
-                pygame.time.delay(500)
-                #game.playing = False
+            obstacle.update(game_speed, self.obstacles)
+            if obstacle.rect.colliderect(player.rect):
+                on_death()
 
     def draw(self, screen):
         for obstacle in self.obstacles:
             obstacle.draw(screen)
+    
+    def reset(self):
+        self.obstacles = []

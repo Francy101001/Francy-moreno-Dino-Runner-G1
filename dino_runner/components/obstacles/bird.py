@@ -8,7 +8,6 @@ class Bird(Obstacle):
         super().__init__(BIRD[0], pos_y=random.choice([280, 220, 170]))
         self.index = 0
 
-
         
     def draw(self, screen):
         if self.index >= 9:
