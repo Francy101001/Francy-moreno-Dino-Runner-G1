@@ -3,6 +3,7 @@ from pygame import Surface
 from pygame.sprite import Sprite
 from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, HAT
 
+
 DINO_JUMPING = "JUMPING"
 DINO_RUNNING = "RUNNING"
 DINO_DUCKING = "DUCKING"
@@ -19,6 +20,11 @@ class Dinosaur(Sprite):
         self.action = DINO_RUNNING
         self.jump_velocity = self.JUMP_VELOCITY
         self.hat = HAT[0]
+        self.hat_image = pygame.transform.scale(HAT[0], (80, 80))
+        self.hat_rect = self.hat_image.get_rect(center=(0, 0))
+        self.hat_rotation = 0
+        
+        
 
 
     def update(self, user_input):
@@ -39,6 +45,12 @@ class Dinosaur(Sprite):
         
         if self.step >= 10:
             self.step = 0
+        
+        if self.hat_rotation > 0:
+            self.hat_rotation -= 10
+        elif self.hat_rotation < 0:
+            self.hat_rotation += 10
+        
     
     def run(self):
         self.image = RUNNING[self.step // 5]
@@ -49,6 +61,7 @@ class Dinosaur(Sprite):
         self.image = JUMPING
         self.rect.y -= self.jump_velocity * 4
         self.jump_velocity -= 0.8
+        self.hat_rotation = 360
         if self.jump_velocity < -self.JUMP_VELOCITY:
             self.action = DINO_RUNNING
             self.set_position()
@@ -70,20 +83,17 @@ class Dinosaur(Sprite):
 
     def draw(self, screen: Surface ):
         screen.blit(self.image, (self.rect.x, self.rect.y))
-        hat_image = HAT[0]
-        hat_width, hat_height = hat_image.get_size()
-        new_width = int(hat_width / 4)  # Redimensiona la imagen a un cuarto del ancho original
-        new_height = int(hat_height / 4)  # Redimensiona la imagen a un cuarto de la altura original
-        hat_image = pygame.transform.scale(hat_image, (new_width, new_height))  # Redimensiona la imagen
-        
-        hat_rect = hat_image.get_rect()
-        hat_rect.x = self.rect.x + 15
+
         if self.action == DINO_RUNNING or self.action == DINO_JUMPING:
-            hat_rect.y = self.rect.y - 30
+            hat_x, hat_y = self.rect.x + 45, self.rect.y - 5
         elif self.action == DINO_DUCKING:
-            hat_rect.x = self.rect.x + 40
-            hat_rect.y = self.rect.y - 30
-        screen.blit(hat_image, hat_rect)  # Dibuja la imagen redimensionada
+            hat_x, hat_y = self.rect.x + 80, self.rect.y - 10
+        else:
+            hat_x, hat_y = -100, -100
+
+        self.hat_rect.center = (hat_x, hat_y)
+        rotated_hat = pygame.transform.rotate(self.hat_image, self.hat_rotation)
+        screen.blit(rotated_hat, self.hat_rect)# Dibuja la imagen redimensionada
         
     
 

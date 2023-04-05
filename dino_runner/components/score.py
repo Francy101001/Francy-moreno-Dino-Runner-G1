@@ -28,12 +28,14 @@ class Score(Sprite):
     
     def reset_score(self):
         self.score = 0
+        
     
         
     def update(self, game):
         self.score += 1
         if self.score % 100 == 0:
             game.game_speed += 2
+        self.update_score(self.score)
 
     def draw(self, screen):
         text, text_rect = self.text.create_text(f"Score: {self.score}", 22, (0, 0, 0), 1000, 50)
