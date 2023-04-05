@@ -3,27 +3,22 @@ import random
 import pygame
 from dino_runner.components.obstacles.bird import Bird
 from dino_runner.components.obstacles.cactus import Cactus
-from dino_runner.components.obstacles.cactus_small import SmallCactus
 from dino_runner.components.obstacles.obstacle import Obstacle
 from dino_runner.components.obstacles.rat import Rat
 
 
 
 class ObstacleManager:
+    OBTSACLES = [Cactus, Bird]
+
+
     def __init__(self):
         self.obstacles: list[Obstacle] = []
 
     def update(self, game_speed, player, on_death):
         if not self.obstacles:
-            obstacle_type = random.choice(["cactus", "bird", "small_cactus", "rat"])
-            if obstacle_type == "cactus":
-                self.obstacles.append(Cactus())
-            elif obstacle_type == "small_cactus":
-                self.obstacles.append(SmallCactus())
-            elif obstacle_type == "rat":
-                self.obstacles.append(Rat())
-            else:
-                self.obstacles.append(Bird())
+            obstacle = random.choice(self.OBTSACLES)
+            self.obstacles.append(obstacle())
             
             
         for obstacle in self.obstacles:

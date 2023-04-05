@@ -5,13 +5,15 @@ from dino_runner.utils.constants import BIRD
 
 class Bird(Obstacle):
     def __init__(self):
-        super().__init__(BIRD[0], pos_y=random.choice([280, 220, 170]))
-        self.index = 0
+        pos_y = random.randint(200,320)
+        super().__init__(BIRD[0], pos_y)
+        self.step = 0
+    
+    def update(self, game_speed, obstacles):
+        self.image = BIRD[self.step // 10]
+        super().update(game_speed + 3, obstacles)
+        self.step += 1
+        if self.step >= 20:
+            self.step = 0
 
-        
-    def draw(self, screen):
-        if self.index >= 9:
-            self.index = 0
-     
-        screen.blit(BIRD[self.index // 5], self.rect)
-        self.index += 1
+    

@@ -1,19 +1,41 @@
 
+import os
 import pygame
 from pygame.sprite import Sprite
+from dino_runner.components.text_class import Text
 
 class Score(Sprite):
     def __init__(self):
         self.score = 0
+        self.high_score = self.load_high_score()
+        self.text = Text()
+    
+    def load_high_score(self):
+        if not os.path.exists("high_score.txt"):
+            return 0
+        with open("high_score.txt", "r") as f:
+            return int(f.read().strip())
 
+    def save_high_score(self):
+        with open("high_score.txt", "w") as f:
+            f.write(str(self.high_score))
+    
+    def update_score(self, score):
+        self.score = score
+        if self.score > self.high_score:
+            self.high_score = self.score
+            self.save_high_score()
+    
+    def reset_score(self):
+        self.score = 0
+    
+        
     def update(self, game):
         self.score += 1
         if self.score % 100 == 0:
             game.game_speed += 2
 
     def draw(self, screen):
-        font = pygame.font.Font("freesansbold.ttf", 22)
-        text = font.render(f"Score: {self.score}", True, (0,0,0))
-        text_rect = text.get_rect()
-        text_rect.center = (1000,50)
+        text, text_rect = self.text.create_text(f"Score: {self.score}", 22, (0, 0, 0), 1000, 50)
         screen.blit(text, text_rect)
+    
