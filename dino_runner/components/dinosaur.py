@@ -1,7 +1,10 @@
 import pygame
 from pygame import Surface
 from pygame.sprite import Sprite
-from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING, JUMPING, DUCKING, HAT, RUNNING_SHIELD, SCREEN_WIDTH, SHIELD_TYPE
+from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
+from dino_runner.components.obstacles.stairs import Stairs
+from dino_runner.components.power_ups.hammer import Hammer
+from dino_runner.utils.constants import DEFAULT_TYPE, DUCKING_HAMMER, DUCKING_SHIELD, HAMMER_TYPE, JUMPING_HAMMER, JUMPING_SHIELD, RUNNING, JUMPING, DUCKING, HAT, RUNNING_HAMMER, RUNNING_SHIELD, SCREEN_WIDTH, SHIELD_TYPE, STAIRS
 from dino_runner.components.text_class import Text
 
 
@@ -9,9 +12,9 @@ from dino_runner.components.text_class import Text
 DINO_JUMPING = "JUMPING"
 DINO_RUNNING = "RUNNING"
 DINO_DUCKING = "DUCKING"
-IMG_RUNNING = {DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD}
-IMG_JUMPING = {DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD}
-IMG_DUCKING = {DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD}
+IMG_RUNNING = {DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD, HAMMER_TYPE: RUNNING_HAMMER}
+IMG_JUMPING = {DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD, HAMMER_TYPE: JUMPING_HAMMER}
+IMG_DUCKING = {DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD, HAMMER_TYPE: DUCKING_HAMMER}
 
 class Dinosaur(Sprite):
     POS_X = 80
@@ -30,10 +33,12 @@ class Dinosaur(Sprite):
         self.hat_rect = self.hat_image.get_rect(center=(0, 0))
         self.hat_rotation = 0
         self.power_up_time_up = 0
+        self.has_hammer = False
+        self.obstacle_manager = ObstacleManager()
+        self.stairs = Stairs()
+        self.on_stairs = False
         
         
-
-
     def update(self, user_input):
         if self.action ==DINO_RUNNING:
             self.run()
@@ -50,6 +55,15 @@ class Dinosaur(Sprite):
             else: 
                 self.action = DINO_RUNNING
         
+        if self.rect.colliderect(self.stairs.rect):
+            self.check_collision(self.stairs)
+            
+                
+        if self.has_hammer and user_input[pygame.K_SPACE]:
+            hammer = Hammer()
+            hammer.throw_hammer(self)
+            self.has_hammer = False
+        
         if self.step >= 10:
             self.step = 0
         
@@ -58,7 +72,12 @@ class Dinosaur(Sprite):
         elif self.hat_rotation < 0:
             self.hat_rotation += 10
         
-    
+    def check_collision(self, stairs):
+        if self.action == DINO_JUMPING:
+            if self.rect.colliderect(self.stairs.rect):
+                self.rect.bottom = stairs.rect.top
+                self.action = DINO_RUNNING
+
     def run(self):
         self.update_image(IMG_RUNNING[self.type][self.step // 5])
         self.set_position()
@@ -110,8 +129,13 @@ class Dinosaur(Sprite):
         screen.blit(rotated_hat, self.hat_rect)# Dibuja la imagen redimensionada
         
     def on_pick_power_up(self, power_up):
-        self.type = power_up.type
-        self.power_up_time_up = power_up.start_time + power_up.duration * 1000
+        if power_up.type == HAMMER_TYPE:
+            self.has_hammer = True
+            self.type = power_up.type
+            self.power_up_time_up = power_up.start_time + power_up.duration * 1000
+        else:
+            self.type = power_up.type
+            self.power_up_time_up = power_up.start_time + power_up.duration * 1000
 
     def draw_power_up(self, screen):
         if self.type != DEFAULT_TYPE:

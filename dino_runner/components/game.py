@@ -2,9 +2,10 @@ import pygame
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components.score import Score
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, START, DEAD
+from dino_runner.utils.constants import BG, HAMMER_TYPE, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, SHIELD_TYPE, TITLE, FPS, START, DEAD
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.text_class import Text
+
 
 class Game:
     def __init__(self):
@@ -37,6 +38,8 @@ class Game:
         self.playing = True
         self.obstacle_manager.reset()
         self.score.reset_score()
+        self.power_up_manager.reset()
+        self.game_speed = 20
         while self.playing:
             self.events()
             self.update()
@@ -45,7 +48,6 @@ class Game:
     def reset(self):
         self.obstacle_manager.reset()
         self.power_up_manager.reset()
-        self.score.reset()
         self.game_speed = 20
 
        
@@ -55,6 +57,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.playing = False
                 self.running = False
+
 
     def update(self):
         user_input = pygame.key.get_pressed()

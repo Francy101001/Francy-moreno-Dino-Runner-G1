@@ -21,7 +21,7 @@ class ObstacleManager:
         if not self.obstacles:
             obstacle = random.choice(self.OBTSACLES)
             self.obstacles.append(obstacle())
-            
+    
             
         for obstacle in self.obstacles:
             obstacle.update(game_speed, self.obstacles)
@@ -39,11 +39,15 @@ class ObstacleManager:
                     continue
                     #on_death()
             elif obstacle.rect.colliderect(player.rect):
-                on_death()
-
+                #on_death()
+                continue
+    
     def draw(self, screen):
         for obstacle in self.obstacles:
             obstacle.draw(screen)
     
+    
     def reset(self):
         self.obstacles = []
+    
+    
