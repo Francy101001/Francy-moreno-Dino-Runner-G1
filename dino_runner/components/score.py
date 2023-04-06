@@ -8,7 +8,7 @@ class Score(Sprite):
     def __init__(self):
         self.score = 0
         self.high_score = self.load_high_score()
-        self.text = Text()
+        
     
     def load_high_score(self):
         if not os.path.exists("high_score.txt"):
@@ -29,7 +29,6 @@ class Score(Sprite):
     def reset_score(self):
         self.score = 0
         
-    
         
     def update(self, game):
         self.score += 1
@@ -38,6 +37,6 @@ class Score(Sprite):
         self.update_score(self.score)
 
     def draw(self, screen):
-        text, text_rect = self.text.create_text(f"Score: {self.score}", 22, (0, 0, 0), 1000, 50)
+        text, text_rect = Text.create_text(f"Score: {self.score}", 22, (0, 0, 0), 1000, 50)
         screen.blit(text, text_rect)
     

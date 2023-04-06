@@ -32,11 +32,12 @@ class ObstacleManager:
                 stairs_top = obstacle.stairs.rect.top
                 stairs_height = obstacle.stairs.rect.height
                 if player_top >= stairs_bottom:
-                    # El jugador está por encima de la escalera, ignorar la colisión
+                    # El jugador está por encima de la escalera-> ignorar la colisión
                     continue
                 elif player_top + player.rect.height < stairs_top + stairs_height:
-                    # El jugador está por debajo de la escalera, morir
-                    on_death()
+                    # El jugador está por debajo de la escalera-> morir
+                    continue
+                    #on_death()
             elif obstacle.rect.colliderect(player.rect):
                 on_death()
 
